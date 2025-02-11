@@ -3,6 +3,7 @@ from io import StringIO
 import time
 import pdfplumber
 from backend.basic_checker import basic_checker
+from backend.candidate import Candidate
 
 st.markdown(
     """
@@ -27,6 +28,7 @@ job_posting = st.text_area(
 )
 
 uploaded_file = st.file_uploader("Choose a resume",type=["pdf"],accept_multiple_files=False)
+resume_content = None
 if uploaded_file is not None:
     # To read file as bytes:
     with pdfplumber.open(uploaded_file) as pdf:
@@ -37,11 +39,24 @@ if uploaded_file is not None:
 
 questions_count = st.number_input("Number of questions per skill",min_value=5, max_value=50)
 
+def run_workflow(job_posting, resume_content, questions_count):
+    if not job_posting or not resume_content or not questions_count:
+        st.error("First Fill all inputs")
+        return
+    # Job Posting, Resume Reader -> CheckBasic
+    basic_response = basic_checker(job_posting, resume_content, questions_count)
+    candidate_object = Candidate()
+    candidate_object.name = basic_response["name"]
+    candidate_object.experience = basic_response["experience"]
+    candidate_object.job_posting = job_posting
+    candidate_object.resume_content = resume_content
+    candidate_object.question_count = questions_count
+    candidate_object.skills = basic_response["skills"]
+    # save this object in session
+    st.session_state["current_candidate"] = candidate_object
+    st.switch_page("pages/analysis.py")
+
+
 if st.button("Analyze"):
     with st.spinner("Analyzing..."):
-        time.sleep(5)
-        # Job Posting, Resume Reader -> CheckBasic
-        basic_checker(job_posting, resume_content, questions_count)
-        st.success("Done!")
-        st.switch_page("pages/analysis.py")
-        
+        run_workflow(job_posting, resume_content, questions_count)

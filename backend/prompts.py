@@ -4,7 +4,7 @@ Resume : {pdf_text}
 you have to give response int the following JSON format:
 {{
     "name": Name of the candidate,
-    "experience": how much experience the candidate has in industry,
+    "experience": how much experience the candidate has in industry only in years,
     "skills": technical skills the candidate has. your response should be like array ["python","c++","java"],
 }}
 

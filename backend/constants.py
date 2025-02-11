@@ -1,4 +1,4 @@
-WATSONX_URL="https://eu-de.ml.cloud.ibm.com",
+WATSONX_URL="https://eu-de.ml.cloud.ibm.com"
 WATSONX_PARAMS={
     "temperature": 0,
     "max_tokens": 8000,
