@@ -6,3 +6,5 @@ class Candidate:
         self.experience = None
         self.skills = None
         self.question_count = None
+        self.matching_score = None
+        self.summary = None

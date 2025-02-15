@@ -40,20 +40,33 @@ if uploaded_file is not None:
 questions_count = st.number_input("Number of questions per skill",min_value=5, max_value=50)
 
 def run_workflow(job_posting, resume_content, questions_count):
+    print(job_posting)
+    print(resume_content)
     if not job_posting or not resume_content or not questions_count:
         st.error("First Fill all inputs")
         return
     # Job Posting, Resume Reader -> CheckBasic
-    basic_response = basic_checker(job_posting, resume_content, questions_count)
+    # basic_response = basic_checker(job_posting, resume_content, questions_count)
     candidate_object = Candidate()
-    candidate_object.name = basic_response["name"]
-    candidate_object.experience = basic_response["experience"]
-    candidate_object.job_posting = job_posting
-    candidate_object.resume_content = resume_content
-    candidate_object.question_count = questions_count
-    candidate_object.skills = basic_response["skills"]
-    # save this object in session
+    # candidate_object.name = basic_response["name"]
+    # candidate_object.experience = basic_response["experience"]
+    # candidate_object.job_posting = job_posting
+    # candidate_object.resume_content = resume_content
+    # candidate_object.question_count = questions_count
+    # candidate_object.skills = basic_response["skills"]
+    # candidate_object.matching_score = basic_response["matching_score"]
+    # candidate_object.summary = basic_response["summary"]
+    
+    candidate_object.name = "Jenis Donda"
+    candidate_object.experience = "2 years"
+    candidate_object.skills = ["Python", "C++", "Java"]
+    candidate_object.matching_score = 80
+    candidate_object.summary = ["Good candidate", "Excellent candidate", "Superb candidate"]
+    
+    # # save this object in session
     st.session_state["current_candidate"] = candidate_object
+    print("Hii")
+    
     st.switch_page("pages/analysis.py")
 
 

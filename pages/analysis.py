@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 from st_circular_progress import CircularProgress
 
 st.markdown(
@@ -18,10 +19,8 @@ if st.button("⬅️ Back"):
 a, b = st.columns(2)
 c, d = st.columns(2)
 
-a.metric("Name", "John Doe",border=True)
-b.metric("Experience", "1+ year",border=True)
-
-import streamlit as st
+a.metric("Name", st.session_state["current_candidate"].name,border=True)
+b.metric("Experience", st.session_state["current_candidate"].experience,border=True)
 
 @st.dialog("Cast your vote")
 def vote(item):
@@ -56,7 +55,7 @@ with col5:
         
 my_circular_progress = CircularProgress(
     label="Matching Score",
-    value=70,
+    value=st.session_state["current_candidate"].matching_score,
     key="my_circular_progress",
     color="green",
 )
@@ -64,12 +63,22 @@ my_circular_progress = CircularProgress(
 my_circular_progress.st_circular_progress()
 st.title("Skills")
 
+questions = [
+    "What is your name?",
+    "What is your experience?",
+    "What skills do you have?",
+    "Why do you want this job?",
+    "What is the difference between @staticmethod, @classmethod, and instance methods?"
+]
+
 @st.dialog("Questions")
 def skill_modal(skill):
-    st.write(f"Hiii this is {skill}")
+    df = pd.DataFrame({"Que No.": range(1, len(questions) + 1), "Questions": questions})
+    df.set_index("Que No.", inplace=True)
+    st.table(df)
+    
 
-# Skill List
-skills = ["Python", "Java", "C++", "C", "JavaScript", "HTML", "CSS", "SQL", "Swift", "Go"]
+skills = st.session_state["current_candidate"].skills
 
 # Initialize session state to track clicks
 if "selected_skill" not in st.session_state:
@@ -85,6 +94,6 @@ for i, skill in enumerate(skills):
         if st.button(skill):
             skill_modal(skill)
 
-# Display selected skill
-if st.session_state.selected_skill:
-    st.write(f"✅ You selected: **{st.session_state.selected_skill}**")
+st.title("Summary")
+for point in st.session_state["current_candidate"].summary:
+    st.write(point)
