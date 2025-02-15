@@ -1,6 +1,4 @@
 import streamlit as st
-from io import StringIO
-import time
 import pdfplumber
 from backend.basic_checker import basic_checker
 from backend.candidate import Candidate
@@ -46,27 +44,19 @@ def run_workflow(job_posting, resume_content, questions_count):
         st.error("First Fill all inputs")
         return
     # Job Posting, Resume Reader -> CheckBasic
-    # basic_response = basic_checker(job_posting, resume_content, questions_count)
+    basic_response = basic_checker(job_posting, resume_content, questions_count)
     candidate_object = Candidate()
-    # candidate_object.name = basic_response["name"]
-    # candidate_object.experience = basic_response["experience"]
-    # candidate_object.job_posting = job_posting
-    # candidate_object.resume_content = resume_content
-    # candidate_object.question_count = questions_count
-    # candidate_object.skills = basic_response["skills"]
-    # candidate_object.matching_score = basic_response["matching_score"]
-    # candidate_object.summary = basic_response["summary"]
-    
-    candidate_object.name = "Jenis Donda"
-    candidate_object.experience = "2 years"
-    candidate_object.skills = ["Python", "C++", "Java"]
-    candidate_object.matching_score = 80
-    candidate_object.summary = ["Good candidate", "Excellent candidate", "Superb candidate"]
+    candidate_object.name = basic_response["name"]
+    candidate_object.experience = basic_response["experience"]
+    candidate_object.job_posting = job_posting
+    candidate_object.resume_content = resume_content
+    candidate_object.question_count = questions_count
+    candidate_object.skills = basic_response["skills"]
+    candidate_object.matching_score = basic_response["matching_score"]
+    candidate_object.summary = basic_response["summary"]
     
     # # save this object in session
     st.session_state["current_candidate"] = candidate_object
-    print("Hii")
-    
     st.switch_page("pages/analysis.py")
 
 
