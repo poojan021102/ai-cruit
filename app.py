@@ -38,8 +38,6 @@ if uploaded_file is not None:
 questions_count = st.number_input("Number of questions per skill",min_value=5, max_value=50)
 
 def run_workflow(job_posting, resume_content, questions_count):
-    print(job_posting)
-    print(resume_content)
     if not job_posting or not resume_content or not questions_count:
         st.error("First Fill all inputs")
         return

@@ -13,3 +13,22 @@ you have to give response int the following JSON format:
 If you not found any of the above information in resume then make it empty "".
 your response is only in JSON format not contain any other text.
 """
+
+PERSONAL_INFO_PROMPT = """Consider yourself as an expert resume reviewer. I am giving you the resume text:
+
+{resume_text}
+
+I want to give this resume information to the recruiter so first read and understand the resume properly and then give me the output in the following format:
+
+{{
+"company_wise_experience" : [{{"company_name": "The name of the company", "job_location": "Job location of the role", "role": "Job role in the company", "duration": "Start month start year - End month end year"}}, ...],
+
+"education": [{{"insitution_name": "Name of the school or university or college", "grade":"Grade in the corresponding institution"}}, ...],
+"personal_information": [{{"category": "Personal Information category like email, github, Phone number etc.", "value": "Value of the corresponding category"}}, ...],
+"achievements": [{{"category": "achievement category", "description":"Detailed description of the achievement category"}}, ...],
+"certification": ["Name of the certification that user has done", ...]
+}}
+
+Make sure that you only give JSON in the output.
+
+Also make sure that you did not miss any key in the above JSON."""

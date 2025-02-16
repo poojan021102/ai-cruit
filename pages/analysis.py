@@ -1,6 +1,18 @@
 import streamlit as st
 import pandas as pd
 from st_circular_progress import CircularProgress
+from backend.basic_checker import get_personal_info
+from backend.constants import (
+    EXPERIENCE_COL,
+    EXPERIENCE_COL_KEY,
+    EDUCATION_COL,
+    EDUCATION_COL_KEYS,
+    ACHIEVEMENTS_COL,
+    ACHIEVEMENTS_COL_KEY,
+    CERTIFICATION_COL,
+    CERTIFICATION_COL_KEY
+)
+
 
 st.markdown(
     """
@@ -22,36 +34,53 @@ c, d = st.columns(2)
 a.metric("Name", st.session_state["current_candidate"].name,border=True)
 b.metric("Experience", st.session_state["current_candidate"].experience,border=True)
 
-@st.dialog("Cast your vote")
-def vote(item):
-    st.write(f"Why is {item} your favorite?")
-    reason = st.text_input("Because...")
-    if st.button("Submit"):
-        st.session_state.vote = {"item": item, "reason": reason}
-        st.rerun()
+def show_table(columns, data):
+    df = pd.DataFrame(data ,columns = columns)
+    df.reset_index(drop = True, inplace=True)
+    st.table(df)
+
+def run(key):
+    if st.session_state.get("personal_info"):
+        return st.session_state["personal_info"][key]
+    with st.spinner("Fetching Details..."):
+        st.session_state["personal_info"] = get_personal_info(st.session_state["current_candidate"].resume_content)
+    return st.session_state["personal_info"][key]
+
+
+@st.dialog("Personal Information", width = "large")
+def show_modal(key, columns, columns_key):
+    data = run(key)
+    if(key == "certification"):
+        final_data = [[val] for val in data]
+    else:
+        final_data = [[row.get(key) for key in columns_key] for row in data]
+    show_table(columns, final_data)
 
 col1, col2, col3, col4, col5 = st.columns(5)
+
 
 # Buttons inside columns
 with col1:
     if st.button("💼 Experience"):
-        vote("A")
+        show_modal("company_wise_experience", EXPERIENCE_COL, EXPERIENCE_COL_KEY)
 
 with col2:
     if st.button("🎓 Education"):
-        vote("B")
+        show_modal("education", EDUCATION_COL, EDUCATION_COL_KEYS)
 
 with col3:
     if st.button("🎖️ Achievements"):
-        vote("C")
+        show_modal("achievements", ACHIEVEMENTS_COL, ACHIEVEMENTS_COL_KEY)
         
 with col4:
     if st.button("📜 Certificates"):
-        vote("D")
+        show_modal("certification", CERTIFICATION_COL, CERTIFICATION_COL_KEY)
 
 with col5:
     if st.button("📞 Contact"):
-        vote("E")
+        cols = ["Category", "Value"]
+        cols_key = ["category", "value"]
+        show_modal("personal_information", cols, cols_key)
         
 my_circular_progress = CircularProgress(
     label="Matching Score",
