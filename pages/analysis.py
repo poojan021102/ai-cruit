@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from st_circular_progress import CircularProgress
 from backend.basic_checker import get_personal_info
+from backend.basic_checker import get_questions
 from backend.constants import (
     EXPERIENCE_COL,
     EXPERIENCE_COL_KEY,
@@ -36,8 +37,7 @@ b.metric("Experience", st.session_state["current_candidate"].experience,border=T
 
 def show_table(columns, data):
     df = pd.DataFrame(data ,columns = columns)
-    df.reset_index(drop = True, inplace=True)
-    st.table(df)
+    st.markdown(df.style.hide(axis="index").to_html(), unsafe_allow_html=True)
 
 def run(key):
     if st.session_state.get("personal_info"):
@@ -47,7 +47,7 @@ def run(key):
     return st.session_state["personal_info"][key]
 
 
-@st.dialog("Personal Information", width = "large")
+@st.dialog("Details", width = "large")
 def show_modal(key, columns, columns_key):
     data = run(key)
     if(key == "certification"):
@@ -92,20 +92,21 @@ my_circular_progress = CircularProgress(
 my_circular_progress.st_circular_progress()
 st.title("Skills")
 
-questions = [
-    "What is your name?",
-    "What is your experience?",
-    "What skills do you have?",
-    "Why do you want this job?",
-    "What is the difference between @staticmethod, @classmethod, and instance methods?"
-]
-
-@st.dialog("Questions")
+@st.dialog("Questions",width = "large")
 def skill_modal(skill):
-    df = pd.DataFrame({"Que No.": range(1, len(questions) + 1), "Questions": questions})
-    df.set_index("Que No.", inplace=True)
-    st.table(df)
-    
+    if "skill" not in st.session_state:
+        st.session_state["skill"] = {}
+    if not st.session_state["skill"].get(skill):
+        with st.spinner("Generating Questions..."):
+            questions = get_questions(st.session_state["current_candidate"].question_count, skill, st.session_state["current_candidate"].experience)
+            st.session_state["skill"][skill] = questions
+    else:
+        questions = st.session_state["skill"][skill]
+        
+    for question in questions:
+        with st.expander(f"**{question.get("question")}**"):
+            st.write("**:blue[Answer:]**")
+            st.write(question.get("answer"))
 
 skills = st.session_state["current_candidate"].skills
 

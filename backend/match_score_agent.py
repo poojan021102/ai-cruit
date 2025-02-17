@@ -38,7 +38,7 @@ async def main(job_posting, resume_content):
     critic_agent = AssistantAgent(
         "critic",
         model_client=wx_client,
-        system_message="Provide constructive feedback. analyze the matching score whether it is reliable or not. if you feel it is not coreect then 'REJECT' it .Respond with 'APPROVE' and with matching score to when your feedbacks are addressed.",
+        system_message="Provide constructive feedback. analyze the matching score whether it is reliable or not. if you feel it is not correct then 'REJECT' it .Respond with 'APPROVE' and with matching score to when your feedbacks are addressed.",
     )
 
     text_termination = TextMentionTermination("APPROVE")
@@ -50,7 +50,7 @@ async def main(job_posting, resume_content):
     I am providing you the Job requirements and resume of the candidate. 
     you have to analyze the job requirements and then observing skills, experience, achievemnets and certifications in resume.
     based on that you have to decide how much % resume is matched with our job requirements. 
-    and give me final response only in  ercentage no other text.
+    and give me final response only in percentage no other text.
     Job requirements: {job_posting}
     Resume : {resume_content}
     """):

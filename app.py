@@ -2,6 +2,7 @@ import streamlit as st
 import pdfplumber
 from backend.basic_checker import basic_checker
 from backend.candidate import Candidate
+import base64
 
 st.markdown(
     """
@@ -17,7 +18,23 @@ st.markdown(
 
 vert_space = '<div style="marign-top: 2px 5px;"></div>'
 st.markdown(vert_space, unsafe_allow_html=True)
-st.title("AI-Cruit")
+
+def get_base64_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode()
+
+image_path = "logo.png"
+img_base64 = get_base64_image(image_path)
+
+st.markdown(
+    f"""
+    <div style="display: flex; align-items: center;">
+        <img src="data:image/png;base64,{img_base64}" width="130" style="margin-right: 5px;">
+        <h1 style="margin: 0;">AI-Cruit</h1>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 job_posting = st.text_area(
     "Enter the Job reqirements",
@@ -42,7 +59,7 @@ def run_workflow(job_posting, resume_content, questions_count):
         st.error("First Fill all inputs")
         return
     # Job Posting, Resume Reader -> CheckBasic
-    basic_response = basic_checker(job_posting, resume_content, questions_count)
+    basic_response = basic_checker(job_posting, resume_content)
     candidate_object = Candidate()
     candidate_object.name = basic_response["name"]
     candidate_object.experience = basic_response["experience"]

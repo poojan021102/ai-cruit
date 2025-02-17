@@ -32,3 +32,22 @@ I want to give this resume information to the recruiter so first read and unders
 Make sure that you only give JSON in the output.
 
 Also make sure that you did not miss any key in the above JSON."""
+
+QUESTION_GENERATION_PROMPT="""
+I'm evaluating the resume of candidate.
+I'm providing you no.of questions to be generted.
+No. of Questions : {no_of_questions}
+Skill : {skill}
+
+You have to generate {no_of_questions} questions on {skill} skill. Candidate has an overall {experience} of experience.
+So consider the candidate experience and based on that generate best question for interview purpose.
+And also give me related answer for that question also.
+
+you must have to give response into the list of JSON format:
+[
+    {{"question": "Question 1", "answer": "Answer 1"}},
+    {{"question": "Question 2", "answer": "Answer 2"}},
+    {{"question": "Question 3", "answer": "Answer 3"}},
+    ....
+]
+"""
